@@ -1,4 +1,4 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 /**
  * Represents an audio sample.<br />

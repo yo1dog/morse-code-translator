@@ -1,13 +1,13 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 public class MorseCodeDetector 
 {
 	private static final short MIN_MORSE_CODE_FREQUENCY = 200;
-	private static final short MAX_MORSE_CODE_FREQUENCY = 15330;
+	private static final short MAX_MORSE_CODE_FREQUENCY = 3500;
 	
 	private static final int FREQUENCY_DETECTION_NUM_UNITS = 6;
 	
-	private static final int MIN_AMPLITUDE = 1000000;
+	private static final int MIN_AMPLITUDE = 1000 * 1000;
 	
 	
 	private double morseCodeFrequency = -1;
@@ -46,7 +46,7 @@ public class MorseCodeDetector
 		private static final long MIN_DURATION_BETWEEN_UNITS = Util.msToTime(100);  // minimum time between units
 		private static final long DURATION_TO_END_UNIT       = Util.msToTime(10);   // time the frequency must be absent for to end a unit
 		
-		private final double frequency;
+		final double frequency;
 		private final int fftSetSampleIndex;
 		
 		private final Duration[] units = new Duration[FREQUENCY_DETECTION_NUM_UNITS];

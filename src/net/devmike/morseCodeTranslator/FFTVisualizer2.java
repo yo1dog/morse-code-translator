@@ -1,4 +1,4 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,16 +22,18 @@ public class FFTVisualizer2
 	private static final int DATA_DURATION_MS = 3000;
 	
 	private static final int VISUALIZATION_AMPLITUDE_ORIGIN = 0;
-	private static final int VISUALIZATION_AMPLITUDE_RANGE  = 2000000;
+	private static final int VISUALIZATION_AMPLITUDE_RANGE  = 5000 * 1000;
+	private static final int VISUALIZATION_AMPLITUDE_MARKING_INTERVAL = 250 * 1000;
 	
 	private static final int VISUALIZATION_TIME_RANGE_MS = DATA_DURATION_MS;
 	private static final int VISUALIZATION_TIME_MARKING_INTERVAL_MS = 100;
 	
-	private static final int VISUALIZATION_MIN_FREQUENCY = 233;
-	private static final int VISUALIZATION_MAX_FREQUENCY = 15000;
-			
+	private static final int VISUALIZATION_MIN_FREQUENCY = 800;
+	private static final int VISUALIZATION_MAX_FREQUENCY = 1500;
+	
 	private static final int VISUALIZATION_NUM_TIME_MARKINGS = DATA_DURATION_MS / VISUALIZATION_TIME_MARKING_INTERVAL_MS + 1;
 	
+	private static final int VISUALIZATION_NUM_PLOT_POINTS_TO_AVERAGE = 1;
 	
 	
 	// ===================================================================
@@ -42,21 +44,21 @@ public class FFTVisualizer2
 	// -------------------------------------------------------------------
 	// window elements
 	
-	private final JFrame visualizerFrame;
-	private FFTVisualizerPanel visualizerPanel;
+	final JFrame visualizerFrame;
+	FFTVisualizerPanel visualizerPanel;
 	
 	
 	// -------------------------------------------------------------------
 	// visualization data
 	
-	private long visualizationTimeOrigin;
-	private long visualizationTimeRange;
-	private long visualizationTimeMarkingInterval;
+	long visualizationTimeOrigin;
+	long visualizationTimeRange;
+	long visualizationTimeMarkingInterval;
 	
-	private long dataDuration;
-	private long dataMaxNumPoints;
+	long dataDuration;
+	long dataMaxNumPoints;
 	
-	private FrequencyPlot[] frequencyPlots;
+	FrequencyPlot[] frequencyPlots;
 	
 	
 	
@@ -82,6 +84,9 @@ public class FFTVisualizer2
 		public final int fftSetSampleIndex;
 		public final Color color;
 		
+		private double totaledFrequencyPointAmplitude = 0;
+		private int numFrequencyPointsTotaled = 0;
+		
 		public final ArrayList<FrequencyPoint> points = new ArrayList<FrequencyPoint>();
 		
 		public FrequencyPlot(double frequency, int fftSetSampleIndex, Color color)
@@ -89,6 +94,27 @@ public class FFTVisualizer2
 			this.frequency = frequency;
 			this.fftSetSampleIndex = fftSetSampleIndex;
 			this.color = color;
+		}
+		
+		@SuppressWarnings("unused")
+		public void addPoint(FrequencyPoint point)
+		{
+			if (VISUALIZATION_NUM_PLOT_POINTS_TO_AVERAGE < 2)
+			{
+				points.add(point);
+				return;
+			}
+			
+			totaledFrequencyPointAmplitude += point.amplitude;
+			++numFrequencyPointsTotaled;
+			
+			if (numFrequencyPointsTotaled == VISUALIZATION_NUM_PLOT_POINTS_TO_AVERAGE)
+			{
+				points.add(new FrequencyPoint(point.time, totaledFrequencyPointAmplitude / VISUALIZATION_NUM_PLOT_POINTS_TO_AVERAGE));
+				
+				totaledFrequencyPointAmplitude = 0;
+				numFrequencyPointsTotaled = 0;
+			}
 		}
 	}
 	
@@ -194,7 +220,7 @@ public class FFTVisualizer2
 		
 		for (int i = 0; i < frequencyPlots.length; ++i)
 		{
-			frequencyPlots[i].points.add(new FrequencyPoint(fftSet.startTime, fftSet.fftSamples[frequencyPlots[i].fftSetSampleIndex].amplitude));
+			frequencyPlots[i].addPoint(new FrequencyPoint(fftSet.startTime, fftSet.fftSamples[frequencyPlots[i].fftSetSampleIndex].amplitude));
 			
 			if (frequencyPlots[i].points.size() > dataMaxNumPoints)
 				frequencyPlots[i].points.remove(0);
@@ -213,6 +239,9 @@ public class FFTVisualizer2
 	{
 		private static final long serialVersionUID = 1l;
 		
+		public FFTVisualizerPanel() {}
+
+		@Override
 		public void paint(Graphics g)
 		{
 			if (frequencyPlots == null)
@@ -243,7 +272,7 @@ public class FFTVisualizer2
 			}
 			
 			
-			for (int i = VISUALIZATION_AMPLITUDE_ORIGIN; i < VISUALIZATION_AMPLITUDE_RANGE; i += 100000)
+			for (int i = VISUALIZATION_AMPLITUDE_ORIGIN; i < VISUALIZATION_AMPLITUDE_RANGE; i += VISUALIZATION_AMPLITUDE_MARKING_INTERVAL)
 			{
 				int y = getYForAmplitude(i);
 				
@@ -287,7 +316,7 @@ public class FFTVisualizer2
 	 * 
 	 * @return X position on the visualization.
 	 */
-	private int getXForTime(long time)
+	int getXForTime(long time)
 	{
 		return (int)((time - visualizationTimeOrigin) * (visualizerPanel.getWidth() / ((double)visualizationTimeRange)));
 	}
@@ -299,7 +328,7 @@ public class FFTVisualizer2
 	 * 
 	 * @return Y position on the visualization.
 	 */
-	private int getYForAmplitude(double amplitude)
+	int getYForAmplitude(double amplitude)
 	{
 		return visualizerPanel.getHeight() - 50 - (int)((amplitude - VISUALIZATION_AMPLITUDE_ORIGIN) * ((visualizerPanel.getHeight() - 50) / ((float)VISUALIZATION_AMPLITUDE_RANGE)));
 	}

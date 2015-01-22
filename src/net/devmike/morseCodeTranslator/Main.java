@@ -1,4 +1,4 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.TargetDataLine;
 
-import net.devmike.fftVisualizer.FFTVisualizer;
+import net.devmike.morseCodeTranslator.FFTVisualizer;
 
 // TODO: memory leak
 public class Main
@@ -30,8 +30,8 @@ public class Main
 		FFTVisualizer fftVisualizer = new FFTVisualizer();
 		FFTVisualizer2 fftVisualizer2 = new FFTVisualizer2();
 		
-		streamFromFile("music.wav", audioProcessor, fftProcessor, morseCodeDetector, fftVisualizer, fftVisualizer2);
-		//streamFromMic(audioProcessor, fftProcessor, morseCodeDetector, fftVisualizer, fftVisualizer2);
+		//streamFromFile("micTest8000.wav", audioProcessor, fftProcessor, morseCodeDetector, fftVisualizer, fftVisualizer2);
+		streamFromMic(audioProcessor, fftProcessor, morseCodeDetector, fftVisualizer, fftVisualizer2);
 	}
 	
 	private static void streamFromMic(AudioProcessor audioProcessor, FFTProcessor fftProcessor, MorseCodeDetector morseCodeDetector, FFTVisualizer fftVisualizer, FFTVisualizer2 fftVisualizer2) throws Exception
@@ -39,11 +39,11 @@ public class Main
 		// create our format
 		AudioFormat audioFormat = new AudioFormat(
 				AudioFormat.Encoding.PCM_SIGNED, // encoding
-				88200.0f,                        // sample rate. NOTE: Changing this may throw off several algorithms since we assume 1 unit of time between each sample
+				8000.0f,                         // sample rate.
 				16,                              // sample size in bits. NOTE: If you change this, you will have to change the amplitude data type.
 				1,                               // channels
 				2,                               // frame size
-				88200.0f,                        // frame rate
+				8000.0f,                         // frame rate
 				true);                           // big-endian
 		
 		
@@ -74,7 +74,7 @@ public class Main
 			{
 				FFTSet[] fftSets = fftProcessor.processAudioSamples(audioProcessor.processAudioData(audioByteBuffer, 0, numBytesRead, audioFormat.isBigEndian()));
 				
-				//morseCodeDetector.processFFTSets(fftSets);
+				morseCodeDetector.processFFTSets(fftSets);
 				
 				//if (fftSets.length > 0)
 				//	fftVisualizer.displayFFTSet(fftSets[0]);

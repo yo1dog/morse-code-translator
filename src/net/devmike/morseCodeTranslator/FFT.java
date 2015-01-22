@@ -1,4 +1,4 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 /*************************************************************************
  *  Compilation:  javac FFT.java
@@ -61,7 +61,8 @@ public class FFT
 	    }
 
 	    // return a string representation of the invoking Complex object
-	    public String toString() {
+	    @Override
+		public String toString() {
 	        if (im == 0) return re + "";
 	        if (re == 0) return im + "i";
 	        if (im <  0) return re + " - " + (-im) + "i";
@@ -69,8 +70,10 @@ public class FFT
 	    }
 
 	    // return abs/modulus/magnitude and angle/phase/argument
-	    public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
-	    public double phase() { return Math.atan2(im, re); }  // between -pi and pi
+	    @SuppressWarnings("unused")
+		public double abs()   { return Math.hypot(re, im); }  // Math.sqrt(re*re + im*im)
+	    @SuppressWarnings("unused")
+		public double phase() { return Math.atan2(im, re); }  // between -pi and pi
 
 	    // return a new Complex object whose value is (this + b)
 	    public Complex plus(Complex b) {
@@ -113,7 +116,8 @@ public class FFT
 
 	    // return the real or imaginary part
 	    public double re() { return re; }
-	    public double im() { return im; }
+	    @SuppressWarnings("unused")
+		public double im() { return im; }
 
 	    // return a / b
 	    public Complex divides(Complex b) {
@@ -122,7 +126,8 @@ public class FFT
 	    }
 
 	    // return a new Complex object whose value is the complex exponential of this
-	    public Complex exp() {
+	    @SuppressWarnings("unused")
+		public Complex exp() {
 	        return new Complex(Math.exp(re) * Math.cos(im), Math.exp(re) * Math.sin(im));
 	    }
 
@@ -137,7 +142,8 @@ public class FFT
 	    }
 
 	    // return a new Complex object whose value is the complex tangent of this
-	    public Complex tan() {
+	    @SuppressWarnings("unused")
+		public Complex tan() {
 	        return sin().divides(cos());
 	    }
 	}
@@ -241,6 +247,7 @@ public class FFT
 
 
 	// compute the linear convolution of x and y
+	@SuppressWarnings("unused")
 	private static Complex[] convolve(Complex[] x, Complex[] y) {
 		Complex ZERO = new Complex(0, 0);
 
@@ -276,7 +283,7 @@ public class FFT
 		
 		FFTSample[] fftSamples = new FFTSample[audioSamples.length];
 		for (int i = 0; i < audioSamples.length; ++i)
-			fftSamples[i] = new FFTSample(((i * ((double)sampleRate / audioSamples.length))), x[i].re());
+			fftSamples[i] = new FFTSample(i * ((double)sampleRate / audioSamples.length), x[i].re());
 		
 		return fftSamples;
 	}

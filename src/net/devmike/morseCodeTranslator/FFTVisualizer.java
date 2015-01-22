@@ -1,4 +1,4 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,13 +33,13 @@ public class FFTVisualizer
 	// window elements
 	
 	private final JFrame visualizerFrame;
-	private FFTVisualizerPanel visualizerPanel;
+	FFTVisualizerPanel visualizerPanel;
 	
 	
 	// -------------------------------------------------------------------
 	// visualization data
 	
-	private FFTSet fftSet;
+	FFTSet fftSet;
 	
 	
 	
@@ -92,6 +92,9 @@ public class FFTVisualizer
 	{
 		private static final long serialVersionUID = 1l;
 		
+		public FFTVisualizerPanel() {}
+
+		@Override
 		public void paint(Graphics g)
 		{
 			g.setColor(Color.BLACK);
@@ -138,7 +141,7 @@ public class FFTVisualizer
 	 * 
 	 * @return X position on the visualization.
 	 */
-	private int getXForFrequency(double frequency)
+	int getXForFrequency(double frequency)
 	{
 		return (int)((frequency - VISUALIZATION_MIN_FREQUENCY) * (visualizerPanel.getWidth() / ((float)VISUALIZATION_MAX_FREQUENCY - VISUALIZATION_MIN_FREQUENCY)));
 	}
@@ -150,7 +153,7 @@ public class FFTVisualizer
 	 * 
 	 * @return Y position on the visualization.
 	 */
-	private int getYForAmplitude(double amplitude)
+	int getYForAmplitude(double amplitude)
 	{
 		return visualizerPanel.getHeight() - 50 - (int)((amplitude - VISUALIZATION_MIN_AMPLITUDE) * ((visualizerPanel.getHeight() - 50) / ((float)VISUALIZATION_MAX_AMPLITUDE - VISUALIZATION_MIN_AMPLITUDE)));
 	}

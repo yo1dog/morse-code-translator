@@ -1,8 +1,8 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 public final class Config
 {
-	public static final int NUM_AUDIO_SAMPLES_IN_FFT_SET = 256;
+	public static final int NUM_AUDIO_SAMPLES_IN_FFT_SET = 512;
 	public static final float MAX_MORSE_CODE_UNIT_DEVIATION = 0.25f;
 	
 	private static int sampleRate;

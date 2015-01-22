@@ -1,4 +1,4 @@
-package net.devmike.fftVisualizer;
+package net.devmike.morseCodeTranslator;
 
 public class FFTProcessor
 {
@@ -62,7 +62,7 @@ public class FFTProcessor
 		for (int i = numSamplesUsed; i < samples.length; ++i)
 		{
 			// shift buffer
-			for (int j = 0; j  < audioSampleBuffer.length - 1; ++j)
+			for (int j = 0; j < audioSampleBuffer.length - 1; ++j)
 				audioSampleBuffer[j] = audioSampleBuffer[j + 1];
 			
 			audioSampleBuffer[audioSampleBuffer.length - 1] = samples[i];
